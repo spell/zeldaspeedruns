@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: zeldaspeedruns
+  keycloak:
+    image: jboss/keycloak
+    restart: always
+    depends_on:
+      - keycloak-db
+      - mailhog
+    ports:
+      - "8080:8080"
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: zsr
+      DB_VENDOR: postgres
+      DB_ADDR: keycloak-db
+      DB_DATABASE: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+  keycloak-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+  mailhog:
+    image: mailhog/mailhog
+    restart: always
+    ports:
+      - "1025:1025"
+      - "8025:8025"
