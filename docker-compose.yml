@@ -27,11 +27,14 @@ services:
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: zsr
+      KEYCLOAK_IMPORT: /tmp/realm-zeldaspeedruns.json
       DB_VENDOR: postgres
       DB_ADDR: keycloak-db
       DB_DATABASE: postgres
       DB_USER: postgres
       DB_PASSWORD: postgres
+    volumes:
+      - .docker/keycloak/realm-zeldaspeedruns.json:/tmp/realm-zeldaspeedruns.json
   keycloak-db:
     image: postgres
     restart: always
