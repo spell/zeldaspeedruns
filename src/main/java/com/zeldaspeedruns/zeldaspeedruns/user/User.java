@@ -23,10 +23,14 @@ public record User(UUID id,
      * @return User instance.
      */
     static User from(@NotNull UserRepresentation userRepresentation) {
+        // We must retrieve the display name attribute from the user, if it exists.
         var displayName = userRepresentation.getUsername();
-        var attributes = userRepresentation.getAttributes().get(DISPLAY_NAME_ATTRIBUTE);
-        if (attributes != null && !attributes.isEmpty()) {
-            displayName = attributes.get(0);
+        var attributes = userRepresentation.getAttributes();
+        if (attributes != null && attributes.containsKey(DISPLAY_NAME_ATTRIBUTE)) {
+            var displayNameAttribute =  attributes.get(DISPLAY_NAME_ATTRIBUTE);
+            if (displayNameAttribute != null && !displayNameAttribute.isEmpty()) {
+                displayName = displayNameAttribute.get(0);
+            }
         }
 
         return new User(
