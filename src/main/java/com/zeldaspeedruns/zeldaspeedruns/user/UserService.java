@@ -36,15 +36,6 @@ public interface UserService {
     User loadUserById(UUID id) throws UserNotFoundException;
 
     /**
-     * Loads user from the backing data storage by their username.
-     *
-     * @param username The user's username.
-     * @return User instance if the user is found.
-     * @throws UserNotFoundException Thrown if no user with that username exists.
-     */
-    User loadUserByUsername(String username) throws UserNotFoundException;
-
-    /**
      * Creates a new user and saves it in the backing data storage.
      *
      * @param username The desired username of the user to create.
@@ -54,4 +45,11 @@ public interface UserService {
      * @throws UserExistsException Thrown when a user with the username and/or password already exists.
      */
     User createUser(String username, String email, String password) throws UserExistsException;
+
+    /**
+     * Updates an user's data in the backing data storage.
+     *
+     * @param user The user to be saved.
+     */
+    User updateUser(User user) throws UserNotFoundException;
 }

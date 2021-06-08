@@ -24,6 +24,7 @@ import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -56,21 +57,10 @@ public class KeycloakUserService implements UserService {
     public User loadUserById(UUID id) throws UserNotFoundException {
         try {
             var userResource = realm.users().get(id.toString());
-            return User.from(userResource.toRepresentation());
+            return User.fromRepresentation(userResource.toRepresentation());
         } catch (Exception e) {
             throw new UserNotFoundException(e.getMessage(), e.getCause());
         }
-    }
-
-    @Override
-    @Cacheable("users")
-    public User loadUserByUsername(String username) throws UserNotFoundException {
-        // Perform an exact match only search for the username.
-        var results = realm.users().search(username, true);
-        if (results.isEmpty()) {
-            throw new UserNotFoundException(String.format("no user with username '%s' exists", username));
-        }
-        return User.from(results.get(0));
     }
 
     @Override
@@ -96,6 +86,17 @@ public class KeycloakUserService implements UserService {
         // We must now retrieve our new user to send them a verification email.
         var userResource = realm.users().get(CreatedResponseUtil.getCreatedId(response));
         userResource.sendVerifyEmail();
-        return User.from(userResource.toRepresentation());
+        return User.fromRepresentation(userResource.toRepresentation());
+    }
+
+    @Override
+    @CachePut(value = "users", key = "#result.id()")
+    public User updateUser(User user) throws UserNotFoundException {
+        var resource = realm.users().get(user.id().toString());
+        var representation = resource.toRepresentation();
+        representation.setEmail(user.email());
+        representation.singleAttribute(User.DISPLAY_NAME_ATTRIBUTE, user.displayName());
+        resource.update(representation);
+        return User.fromRepresentation(representation);
     }
 }

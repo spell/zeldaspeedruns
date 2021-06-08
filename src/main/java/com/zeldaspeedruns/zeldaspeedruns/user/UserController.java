@@ -21,13 +21,16 @@ package com.zeldaspeedruns.zeldaspeedruns.user;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * REST API controller for user related operations.
@@ -51,12 +54,12 @@ public class UserController {
     /**
      * Finds and loads a user by their username, then returns a public profile of their data.
      *
-     * @param username The username to search for.
+     * @param id The identifier of the user.
      * @return Public profile of the user.
      */
-    @GetMapping("/{username}")
-    public UserProfile get(@PathVariable String username) {
-        var user = service.loadUserByUsername(username);
+    @GetMapping("/{id}")
+    public UserProfile get(@PathVariable UUID id) {
+        var user = service.loadUserById(id);
         return UserProfile.from(user);
     }
 
@@ -70,6 +73,14 @@ public class UserController {
     public ResponseEntity<UserProfile> register(@RequestBody @Valid RegisterUserRequestBody body) {
         var user = service.createUser(body.username(), body.email(), body.password());
         return ResponseEntity.status(HttpStatus.CREATED).body(UserProfile.from(user));
+    }
+
+    @PostMapping("/manage/display-name")
+    public ResponseEntity<String> manageDisplayName(@AuthenticationPrincipal Principal principal,
+                                                    @RequestBody String displayName) {
+        var user = service.loadUserById(UUID.fromString(principal.getName()));
+        service.updateUser(user.withDisplayName(displayName));
+        return ResponseEntity.ok(displayName);
     }
 
     /**

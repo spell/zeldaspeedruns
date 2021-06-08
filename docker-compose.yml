@@ -8,6 +8,14 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_PASSWORD: zeldaspeedruns
+  redis:
+    image: redis
+    restart: always
+    command: redis-server --requirepass zeldaspeedruns
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_REPLICATION_MODE=master
   keycloak:
     image: jboss/keycloak
     restart: always
