@@ -10,8 +10,6 @@ and may be freely used by anyone who might find use for it.
 ZeldaSpeedRuns is written in Java 15, to run and compile the project, you must have at least JDK v15 or 
 higher installed. 
 
-It is recommended that you use Docker to set up the environment, see the section about Docker below.
-
 ### Instructions
 
 1. Clone this repository.
@@ -33,63 +31,66 @@ It is recommended that you use Docker to set up the environment, see the section
 If you wish optionally compile the project, simply run `mvnw package` from the command line to build
 the project. This requires you to have the JDK v15 or higher installed on your machine and locatable by
 the Maven wrapper.
-   
-### Docker
-
-To get started and the API server on your own local machine, it is recommended that you use Docker for
-the easiest set up. It is highly recommended you start the environment using `docker-compose up --build`,
-which will automatically do the following:
-
-- Set up Keycloak with a realm and clients already preconfigured.
-- Set up Mailhog as a lightweight SMTP server for testing.
-- Set up Redis as caching storage.
-- Set up a Postgres database.
 
 ### Notes
 
-#### Docker environment provided services
+#### Keycloak
 
-The Docker environment provides a lot of services that the ZSR server relies on. Some of these services are
-exposed on the following ports. To change these ports see *Changing the Docker environment* below.
-
-- **Keycloak** exposes an administrative panel and all of its REST APIs at http://localhost:8080.
-- A **PostgreSQL** server listens on `localhost:5432`.
-- A **Redis** server listens on `localhost:6379`.
-- **Mailhog** is used a lightweight development SMTP server. Any emails sent by Keycloak or the ZSR
-  server are intercepted by this SMTP server. You can read the emails using Mailhog's web interface
-  at http://localhost:8025.
-
-#### Keycloak client secret
-
-If you use the recommended Docker development environment, most of the settings should already be correct,
-however, you may still have to update the Keycloak client secret in your `application.properties` file.
-
-To do so, do the following after starting the Docker development environment:
-
-1. Navigate to `http://localhost:8080/auth` and sign in with the username `admin` and password `zsr`.
-1. Select the `zeldaspeedruns` realm in the dropdown menu at the top left.
-1. Open the `Clients` tab in the navigation menu on the left.
-1. Select the `zeldaspeedruns` client from the list and open the `Credentials` tab above.
-1. Copy the Client Secret or click `Regenerate Client Secret` if the field is empty.
-1. Update the `keycloak.credentials.secret` value in `application.properties` with the new secret.
-1. Restart the ZSR API Server if it is running.
-
-#### Changing the Docker environment
-
-If you want to change the ports that are used by the Docker environment, you can create an override
-file. Simply create a new file called `docker-compose.override.yml`. To change the port that Keycloak
-is exposed on, for example, you would have the following contents.
+The ZeldaSpeedRuns API Server relies on Keycloak for authentication and user management. You can set up Keycloak in
+whatever way is convenient for you. The simplest way to do it would be to create a file named
+`docker-compose.override.yml` with the following contents:
 
 ```yaml
 version: "3.8"
 
 services:
   keycloak:
+    image: zeldaspeedruns/keycloak
+    restart: always
+    depends_on:
+      - keycloak-db
     ports:
-      - "LOCAL_PORT:8080"
+      - "8080:8080"
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: zsr
+      KEYCLOAK_IMPORT: /tmp/realm-zeldaspeedruns.json
+      DB_VENDOR: postgres
+      DB_ADDR: keycloak-db
+      DB_DATABASE: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      JAVA_OPTS_APPEND: "-Dkeycloak.profile.feature.upload_scripts=enabled"
+    volumes:
+      - ./realm-zeldaspeedruns.json:/tmp/realm-zeldaspeedruns.json
+  keycloak-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
 ```
 
-Where `LOCAL_PORT` is the port number you want to expose the Keycloak services on.
+If you do not want to go this route, you can set up Keycloak whatever way is convenient to you. Inside of Keycloak,
+you can import the `realm-zeldaspeedruns.json` file to set up a realm, clients, groups and more. This will configure
+Keycloak correctly. Lastly, you need to edit `application.properties` to match your Keycloak settings.
+
+#### Changing the Docker environment
+
+If you want to change the ports that are used by the Docker environment, you can create an override
+file. Simply create a new file called `docker-compose.override.yml`. To change the port that PostgreSQL
+is exposed on, for example, you would have the following contents.
+
+```yaml
+version: "3.8"
+
+services:
+  database:
+    ports:
+      - "LOCAL_PORT:5432"
+```
+
+Where `LOCAL_PORT` is the port number you want to expose the PostgreSQL service on.
+
 
 #### localhost vs. 127.0.0.1
 

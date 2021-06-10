@@ -18,17 +18,24 @@
 
 package com.zeldaspeedruns.zeldaspeedruns.user;
 
+import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.common.util.Base64Url;
+import org.keycloak.common.util.KeycloakUriBuilder;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.ws.rs.core.Response;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 
@@ -87,16 +94,5 @@ public class KeycloakUserService implements UserService {
         var userResource = realm.users().get(CreatedResponseUtil.getCreatedId(response));
         userResource.sendVerifyEmail();
         return User.fromRepresentation(userResource.toRepresentation());
-    }
-
-    @Override
-    @CachePut(value = "users", key = "#result.id()")
-    public User updateUser(User user) throws UserNotFoundException {
-        var resource = realm.users().get(user.id().toString());
-        var representation = resource.toRepresentation();
-        representation.setEmail(user.email());
-        representation.singleAttribute(User.DISPLAY_NAME_ATTRIBUTE, user.displayName());
-        resource.update(representation);
-        return User.fromRepresentation(representation);
     }
 }

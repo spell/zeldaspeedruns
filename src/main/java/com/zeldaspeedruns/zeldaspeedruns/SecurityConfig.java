@@ -55,7 +55,6 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .mvcMatchers("/users/manage/**").authenticated()
                 .anyRequest().permitAll();
     }
 

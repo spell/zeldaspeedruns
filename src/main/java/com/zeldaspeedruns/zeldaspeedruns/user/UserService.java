@@ -45,11 +45,4 @@ public interface UserService {
      * @throws UserExistsException Thrown when a user with the username and/or password already exists.
      */
     User createUser(String username, String email, String password) throws UserExistsException;
-
-    /**
-     * Updates an user's data in the backing data storage.
-     *
-     * @param user The user to be saved.
-     */
-    User updateUser(User user) throws UserNotFoundException;
 }
