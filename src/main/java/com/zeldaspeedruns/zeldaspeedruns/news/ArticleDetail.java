@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ArticleResponseBody {
+public class ArticleDetail {
     private final UUID id;
     private final UserProfile author;
     private final String title;
@@ -18,7 +18,7 @@ public class ArticleResponseBody {
     private final LocalDateTime postedOn;
     private final LocalDateTime editedOn;
 
-    public ArticleResponseBody(UUID id, UserProfile author, String title, String slug, String source, LocalDateTime postedOn, LocalDateTime editedOn) {
+    public ArticleDetail(UUID id, UserProfile author, String title, String slug, String source, LocalDateTime postedOn, LocalDateTime editedOn) {
         this.id = id;
         this.author = author;
         this.title = title;
@@ -28,11 +28,11 @@ public class ArticleResponseBody {
         this.editedOn = editedOn;
     }
 
-    static ArticleResponseBody from(@NotNull Article article, @NotNull User user) {
-        return new ArticleResponseBody(
+    static ArticleDetail from(@NotNull Article article, @NotNull User user) {
+        return new ArticleDetail(
                 article.id(),
                 UserProfile.from(user),
-                article.title(),
+                article.with(),
                 article.slug(),
                 article.source(),
                 article.postedOn(),

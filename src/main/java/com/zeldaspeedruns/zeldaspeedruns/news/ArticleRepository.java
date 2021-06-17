@@ -6,5 +6,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ArticleRepository extends PagingAndSortingRepository<Article, UUID> {
-    public Optional<Article> findArticleBySlug(String slug);
+    Optional<Article> findArticleBySlug(String slug);
 }
