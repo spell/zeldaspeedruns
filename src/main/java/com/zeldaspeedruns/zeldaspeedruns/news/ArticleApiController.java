@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/news/articles")
-public class ArticleController {
+@RequestMapping("/api/news/articles")
+public class ArticleApiController {
     private final ArticleService service;
     private final UserService userService;
 
-    public ArticleController(ArticleService service, UserService userService) {
+    public ArticleApiController(ArticleService service, UserService userService) {
         this.service = service;
         this.userService = userService;
     }

@@ -44,8 +44,4 @@ public record User(UUID id, String username, String email, String displayName) i
                 displayName
         );
     }
-
-    public User withDisplayName(String displayName) {
-        return new User(id, username, email, displayName);
-    }
 }

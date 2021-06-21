@@ -2,7 +2,7 @@ package com.zeldaspeedruns.zeldaspeedruns.news;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.zeldaspeedruns.zeldaspeedruns.user.User;
-import com.zeldaspeedruns.zeldaspeedruns.user.UserProfile;
+import com.zeldaspeedruns.zeldaspeedruns.user.UserDetail;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -11,14 +11,14 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ArticleDetail {
     private final UUID id;
-    private final UserProfile author;
+    private final UserDetail author;
     private final String title;
     private final String slug;
     private final String source;
     private final LocalDateTime postedOn;
     private final LocalDateTime editedOn;
 
-    public ArticleDetail(UUID id, UserProfile author, String title, String slug, String source, LocalDateTime postedOn, LocalDateTime editedOn) {
+    public ArticleDetail(UUID id, UserDetail author, String title, String slug, String source, LocalDateTime postedOn, LocalDateTime editedOn) {
         this.id = id;
         this.author = author;
         this.title = title;
@@ -31,8 +31,8 @@ public class ArticleDetail {
     static ArticleDetail from(@NotNull Article article, @NotNull User user) {
         return new ArticleDetail(
                 article.id(),
-                UserProfile.from(user),
-                article.with(),
+                UserDetail.from(user),
+                article.title(),
                 article.slug(),
                 article.source(),
                 article.postedOn(),
@@ -44,7 +44,7 @@ public class ArticleDetail {
         return id;
     }
 
-    public UserProfile getAuthor() {
+    public UserDetail getAuthor() {
         return author;
     }
 

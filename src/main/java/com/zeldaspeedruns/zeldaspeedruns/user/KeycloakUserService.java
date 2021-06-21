@@ -22,6 +22,7 @@ import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.common.util.Base64Url;
 import org.keycloak.common.util.KeycloakUriBuilder;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -63,36 +64,14 @@ public class KeycloakUserService implements UserService {
     @Cacheable("users")
     public User loadUserById(UUID id) throws UserNotFoundException {
         try {
-            var userResource = realm.users().get(id.toString());
+            var userResource = getUserResource(id);
             return User.fromRepresentation(userResource.toRepresentation());
         } catch (Exception e) {
             throw new UserNotFoundException(e.getMessage(), e.getCause());
         }
     }
 
-    @Override
-    public User createUser(String username, String email, String password) throws UserExistsException {
-        // Keycloak users can have multiple credentials so we must define a password credential.
-        var credential = new CredentialRepresentation();
-        credential.setTemporary(false);
-        credential.setType(CredentialRepresentation.PASSWORD);
-        credential.setValue(password);
-
-        // Define the new user.
-        var user = new UserRepresentation();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setEnabled(true);
-        user.setCredentials(List.of(credential));
-
-        var response = realm.users().create(user);
-        if (response.getStatusInfo().getFamily() != Response.Status.Family.SUCCESSFUL) {
-            throw new RuntimeException("Could not create user, HTTP status: " + response.getStatus());
-        }
-
-        // We must now retrieve our new user to send them a verification email.
-        var userResource = realm.users().get(CreatedResponseUtil.getCreatedId(response));
-        userResource.sendVerifyEmail();
-        return User.fromRepresentation(userResource.toRepresentation());
+    public UserResource getUserResource(UUID id) {
+        return realm.users().get(id.toString());
     }
 }
