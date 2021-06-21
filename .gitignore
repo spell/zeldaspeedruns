@@ -37,3 +37,6 @@ build/
 
 ### Docker override ###
 *.override.yml
+
+### Node Modules ###
+node_modules

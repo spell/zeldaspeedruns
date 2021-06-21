@@ -1,0 +1,23 @@
+{
+  "name": "zeldaspeedruns",
+  "version": "1.0.0",
+  "description": "This is the next-generation backend API server for the [ZeldaSpeedRuns](https://www.zeldaspeedruns.com)\r website, currently in active development and not yet deployed to production. While this software is\r specifically written for use by ZSR, it is released as free, open-source software licensed under the GPLv3\r and may be freely used by anyone who might find use for it.",
+  "main": "index.js",
+  "scripts": {
+    "watch": "sass src/main/scss/main.scss src/main/resources/static/style.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spell/zeldaspeedruns.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spell/zeldaspeedruns/issues"
+  },
+  "homepage": "https://github.com/spell/zeldaspeedruns#readme",
+  "dependencies": {
+    "sass": "^1.35.1"
+  }
+}

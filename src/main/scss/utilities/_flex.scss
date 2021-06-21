@@ -1,0 +1,25 @@
+.flex-grow {
+  flex-grow: 1;
+}
+
+.flex-spacer {
+  $self: &;
+
+  width: 20px;
+
+  &--sm {
+    width: 10px;
+  }
+
+  &--lg {
+    width: 30px;
+  }
+
+  &--xl {
+    width: 40px;
+  }
+
+  &--vertical {
+    height: 20px;
+  }
+}

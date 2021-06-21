@@ -1,0 +1,56 @@
+.header {
+  width: 100vw;
+  margin: 10px 0 50px 0;
+}
+
+.dark-mode-toggle {
+  display: flex;
+  align-items: center;
+
+  &__switch {
+    margin: 0 5px 0 5px;
+  }
+}
+
+.navigation-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0 25px 0 25px;
+}
+
+.navigation {
+  &__logo {
+    width: 64px;
+    height: 64px;
+  }
+
+  &__list {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__item {
+    display: inline-block;
+    list-style: none;
+    font-family: "Calamity", sans-serif;
+    font-weight: bold;
+    margin: 0 20px 0 0;
+  }
+}
+
+.user-menu {
+  display: flex;
+  flex-direction: column;
+
+  &__links {
+    display: flex;
+    align-items: center;
+  }
+
+  &__link:not(:last-child) {
+    padding-right: 0.6em;
+  }
+}

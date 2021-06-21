@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+  padding: 0;
+
+  background-color: white;
+  color: black;
+
+  transition: 300ms;
+  transition-property: background-color, color;
+
+  &.dark {
+    background-color: rgb(40, 40, 70);
+    color: white;
+  }
+}
+
+a {
+  $self: &;
+  text-decoration: none;
+  color: cornflowerblue;
+}
+
