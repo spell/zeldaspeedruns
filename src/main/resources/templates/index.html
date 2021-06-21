@@ -5,8 +5,56 @@
     <head>
         <meta charset="UTF-8">
         <title>ZeldaSpeedRuns</title>
+
+        <link href="../static/styles.css" th:href="@{/styles.css}" rel="stylesheet"/>
+
+        <script defer th:src="@{/webjars/font-awesome/js/all.js}"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("dark-mode-toggle").addEventListener("change", function (ev) {
+                    if (ev.target.checked === true) {
+                        document.body.classList.add("dark");
+                    } else {
+                        document.body.classList.remove("dark");
+                    }
+                });
+            });
+        </script>
     </head>
     <body>
+        <div class="page">
+            <header>
+                <div class="navigation-wrapper">
+                    <nav>
+                    </nav>
+                    <div class="dark-mode-toggle">
+                        <span class="fas fa-sun"></span>
+                        <label class="toggle-switch dark-mode-toggle__switch">
+                            <input type="checkbox" class="toggle-switch__input" id="dark-mode-toggle">
+                            <span class="toggle-switch__slider"></span>
+                        </label>
+                        <span class="fas fa-moon"></span>
+                    </div>
+                    <div sec:authorize="isAuthenticated()">
+                        <p>Hello there, <span keycloak:token="preferredUsername">User</span>.</p>
+                        <a href="#" keycloak:link="account">Account</a> |
+                        <a href="#" th:href="@{/sso/logout}">Log out</a>
+                    </div>
+                    <div sec:authorize="!isAuthenticated()">
+                        <p>Hello there, guest.</p>
+                        <a href="#" th:href="@{/sso/login}">Log in</a>
+                    </div>
+                </div>
+            </header>
 
+            <main>
+
+            </main>
+
+            <footer>
+
+            </footer>
+        </div>
     </body>
 </html>
