@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    <head th:fragment="head">
+        <meta charset="UTF-8">
+        <title>ZeldaSpeedRuns</title>
+
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@100;400;600;700&display=swap"
+              rel="stylesheet">
+        <link href="../static/style.css" th:href="@{/style.css}" rel="stylesheet">
+
+        <script defer th:src="@{/webjars/font-awesome/js/all.js}"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("dark-mode-toggle").addEventListener("change", function (ev) {
+                    if (ev.target.checked === true) {
+                        document.body.classList.add("dark");
+                    } else {
+                        document.body.classList.remove("dark");
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <header class="header" th:fragment="header">
+            <div class="navigation-wrapper">
+                <nav class="navigation">
+                    <ul class="navigation__list">
+                        <li class="navigation__item">
+                            <a class="navigation__link" href="/" th:href="@{/}">
+                                <img src="../static/logo.svg" th:src="@{/logo.svg}" alt="ZSR Logo"
+                                     class="navigation__logo"/>
+                            </a>
+                        </li>
+                        <li class="navigation__item">
+                            <a class="navigation__link" href="#">Home</a>
+                        </li>
+                        <li class="navigation__item">
+                            <a class="navigation__link" href="#">Schedule</a>
+                        </li>
+                        <li class="navigation__item">
+                            <a class="navigation__link" href="#">Wiki</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="flex-grow"></div>
+                <div class="dark-mode-toggle">
+                    <span class="fas fa-sun"></span>
+                    <label class="toggle-switch dark-mode-toggle__switch">
+                        <input type="checkbox" class="toggle-switch__input" id="dark-mode-toggle">
+                        <span class="toggle-switch__slider"></span>
+                    </label>
+                    <span class="fas fa-moon"></span>
+                </div>
+                <div class="flex-spacer"></div>
+                <div sec:authorize="isAuthenticated()" class="user-menu">
+                        <span class="user-menu__message">
+                            Hello there, <span keycloak:token="preferredUsername">User</span>.
+                        </span>
+                    <div class="user-menu__links">
+                        <a href="#" keycloak:link="account" class="user-menu__link">
+                            <span class="fas fa-user"></span>
+                            <span>Account</span>
+                        </a>
+                        <a href="#" th:href="@{/sso/logout}" class="user-menu__link">
+                            <span class="fas fa-sign-out-alt"></span>
+                            <span>Log out</span>
+                        </a>
+                    </div>
+                </div>
+                <div sec:authorize="!isAuthenticated()" class="user-menu">
+                    <span>Hello there, guest.</span>
+                    <div class="user-menu__links">
+                        <a href="#" th:href="@{/sso/login}" class="user-menu__link">
+                            <span class="fas fa-sign-in-alt"></span>
+                            <span>Log in</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <footer th:fragment="footer">
+            Copyright &copy; ZeldaSpeedRuns, 2021
+        </footer>
+    </body>
+</html>

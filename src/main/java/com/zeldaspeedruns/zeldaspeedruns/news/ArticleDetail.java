@@ -28,7 +28,7 @@ public class ArticleDetail {
         this.editedOn = editedOn;
     }
 
-    static ArticleDetail from(@NotNull Article article, @NotNull User user) {
+    public static ArticleDetail from(@NotNull Article article, @NotNull User user) {
         return new ArticleDetail(
                 article.id(),
                 UserDetail.from(user),
