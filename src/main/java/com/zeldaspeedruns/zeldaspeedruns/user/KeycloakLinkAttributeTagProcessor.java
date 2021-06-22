@@ -1,9 +1,8 @@
-package com.zeldaspeedruns.zeldaspeedruns.dialect;
+package com.zeldaspeedruns.zeldaspeedruns.user;
 
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.keycloak.common.util.KeycloakUriBuilder;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.engine.AttributeName;
 import org.thymeleaf.expression.IExpressionObjects;
@@ -14,12 +13,12 @@ import org.thymeleaf.templatemode.TemplateMode;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class KeycloakTokenAttributeTagProcessor extends AbstractAttributeTagProcessor {
-    private static final String NAME = "token";
+public class KeycloakLinkAttributeTagProcessor extends AbstractAttributeTagProcessor {
+    private static final String NAME = "link";
     private static final int PRECEDENCE = 1000;
 
-    public KeycloakTokenAttributeTagProcessor(final String dialectPrefix) {
-        super(TemplateMode.HTML, dialectPrefix, null, false, NAME, true, PRECEDENCE, true);
+    public KeycloakLinkAttributeTagProcessor(final String dialectPrefix) {
+        super(TemplateMode.HTML, dialectPrefix, "a", false, NAME, true, PRECEDENCE, true);
     }
 
     @Override
@@ -35,20 +34,12 @@ public class KeycloakTokenAttributeTagProcessor extends AbstractAttributeTagProc
         // If we cannot retrieve the token, we do nothing
         if (token != null) {
             final var account = (SimpleKeycloakAccount) token.getDetails();
-            var principal = (KeycloakPrincipal<KeycloakSecurityContext>) account.getPrincipal();
-            var idToken = principal.getKeycloakSecurityContext().getIdToken();
+            final var deployment = account.getKeycloakSecurityContext().getDeployment();
 
-            switch (value) {
-                case "preferredUsername":
-                    structureHandler.setBody(idToken.getPreferredUsername(), true);
-                    break;
-
-                case "subject":
-                    structureHandler.setBody(idToken.getSubject(), true);
-                    break;
-
-                default:
-                    break;
+            if (value.equals("account")) {
+                structureHandler.setAttribute("href", KeycloakUriBuilder.fromUri(deployment.getAccountUrl())
+                        .queryParam("referrer", deployment.getResourceName())
+                        .toTemplate());
             }
         }
     }

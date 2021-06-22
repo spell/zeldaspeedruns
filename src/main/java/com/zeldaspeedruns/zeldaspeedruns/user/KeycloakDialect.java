@@ -1,4 +1,4 @@
-package com.zeldaspeedruns.zeldaspeedruns.dialect;
+package com.zeldaspeedruns.zeldaspeedruns.user;
 
 import org.springframework.stereotype.Component;
 import org.thymeleaf.dialect.AbstractProcessorDialect;

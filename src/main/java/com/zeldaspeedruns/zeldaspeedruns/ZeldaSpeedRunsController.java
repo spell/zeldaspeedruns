@@ -20,7 +20,7 @@ public class ZeldaSpeedRunsController {
 
     @GetMapping("/")
     public String index(Model model, ArticleDetailConverter converter) {
-        var pageRequest = PageRequest.of(0, 5, Sort.by("postedOn"));
+        var pageRequest = PageRequest.of(0, 10, Sort.by("postedOn"));
         var articles = articleService.loadArticles(pageRequest);
         model.addAttribute("articles", articleConverter.fromModels(articles.toList()));
         return "index";

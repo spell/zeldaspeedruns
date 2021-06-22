@@ -18,7 +18,7 @@
                     Posted by <span th:text="${article.author.displayName}">Author</span> on
                     <span th:text="${article.postedOn}">the 1st of January, 2021</span>.
                 </div>
-                <div th:text="${article.source}" class="article__content"></div>
+                <div md:parse="${article.source}" class="article__content"></div>
             </article>
         </main>
 
